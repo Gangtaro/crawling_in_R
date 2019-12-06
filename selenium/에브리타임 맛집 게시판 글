@@ -1,0 +1,79 @@
+date = "01/01"
+
+remD = remoteDriver(port = 4445L, # 포트번호 입력
+                    browserName = "chrome" # 사용할 브라우저
+)
+
+remD$open()  # 서버에 연결
+
+remD$navigate("https://pusan.everytime.kr/375487/p/1")
+
+html = remD$getPageSource()[[1]]
+html = read_html(html)
+
+n = 22
+index = 1:n
+for(index in 1:n){
+  index_1[index] = paste0("#container > div.wrap.articles > article:nth-child(",index,") > a > p")
+  index_2[index] = paste0("#container > div.wrap.articles > article:nth-child(",index,") > a > time")
+}
+index_1 = index_1[-c(1:2)]
+index_2 = index_2[-c(1:2)]
+
+contents      = numeric(n-2)
+contents_date = numeric(n-2)
+
+for(index in 1:(n-2)){
+  contents[index]      = html_text(html_nodes(html,index_1[index]))
+  contents_date[index] = html_text(html_nodes(html,index_2[index]))
+}
+
+data = cbind(contents,contents_date)
+
+btn = remD$findElement(using = "css selector",
+                       value = "#container > div.wrap.articles > div.pagination > a")
+btn$clickElement()
+
+n = 22
+index = 1:n
+for(index in 1:n){
+  index_1[index] = paste0("#container > div.wrap.articles > article:nth-child(",index,") > a > p")
+  index_2[index] = paste0("#container > div.wrap.articles > article:nth-child(",index,") > a > time")
+}
+index_1 = index_1[-c(1,22)]
+index_2 = index_2[-c(1,22)]
+
+while(sum(grepl(date, contents_date)) == 0){
+  
+  html = remD$getPageSource()[[1]]
+  html = read_html(html)
+  
+  contents      = numeric(n-2)
+  contents_date = numeric(n-2)
+  
+  for(index in 1:(n-2)){
+    contents[index]      = html_text(html_nodes(html,index_1[index]))
+    contents_date[index] = html_text(html_nodes(html,index_2[index]))
+  }
+  
+  data = rbind(  data,  cbind(contents,contents_date)  )
+  
+  btn = remD$findElement(using = "css selector",
+                         value = "#container > div.wrap.articles > div.pagination > a.next")
+  btn$clickElement()
+  
+  Sys.sleep(1)
+  
+  
+}
+
+data = unique(data)
+
+
+write.table(data,
+            file = "C:/Users/Gangtaro/Desktop/TEXT_mining/what_to_eat_pnu.txt", # "경로/결과물이름.txt"
+            sep = "}",  # "구분기호"
+            row.names = TRUE,
+            quote = FALSE
+)
+
