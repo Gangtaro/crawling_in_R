@@ -1,0 +1,16 @@
+remD$navigate("https://www.youtube.com/watch?v=LHUAmHYOXFM")
+
+btn = remD$findElement(using = "css selector",
+                       value = '.html5-main-video')
+btn$clickElement()
+
+# 홈페이지 스크롤
+remD$executeScript("window.scrollTo(0,500)")
+remD$executeScript("window.scrollTo(500,1000)")
+remD$executeScript("window.scrollTo(1000,1500)")
+
+html = remD$getPageSource()[[1]]
+html = read_html(html)
+
+youtube_comments = html %>% html_nodes("#content-text") %>% html_text()
+youtube_comments = youtube_comments[1:50]
