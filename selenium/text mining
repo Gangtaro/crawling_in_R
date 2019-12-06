@@ -1,0 +1,32 @@
+data1 = read_xlsx("C:/Users/Gangtaro/Desktop/TEXT_mining/what_to_eat_pnu1.xlsx")
+data1$contents_date[c(1,length(text1))]
+
+text1 = as.character(data1$contents)
+length(text1)
+text1 = data_frame(line = 1:length(text1), text = text1) # tidy text data set (정돈 텍스트 데이터 셋)
+
+install.packages("tidytext")
+library(tidytext)
+library(dplyr)
+
+ 
+texttokens = 
+  text1 %>% 
+    unnest_tokens(word, text)
+
+texttokens %>%
+    count(word, sort = TRUE)
+
+# 단어 카운트
+texttokens %>%
+  count(word, sort = TRUE) %>%
+  filter(n > 100) %>%
+  mutate(word = reorder(word, n)) %>%
+  ggplot(aes(word,n)) +
+  geom_col() +
+  xlab(NULL) +
+  coord_flip()
+
+
+install.packages("KoNPL")
+library(KoNPL)
