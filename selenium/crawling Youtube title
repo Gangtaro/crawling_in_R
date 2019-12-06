@@ -1,0 +1,27 @@
+title_youtube = "에이림 인공지능"
+
+remD$navigate(paste0("https://www.youtube.com/results?search_query=",title_youtube))
+                      # 해당 홈페이지로 연결
+
+html = remD$getPageSource()[[1]]
+html = read_html(html)   # 페이지 소스 읽어오기
+
+youtube_title = html %>% html_nodes("#video-title") %>% html_text()
+
+youtube_title
+
+youtube_title = gsub("\n", # 삭제 문자열
+                     "",   # 대체 문자열 
+                     youtube_title # 데이터
+                     ) 
+youtube_title = trimws(youtube_title) # 공백제거
+youtube_title
+
+# 텍스트 파일로 저장
+write.table(youtube_title,
+            file = "", # "경로/결과물이름.txt"
+            sep = ",",  # "구분기호"
+            row.names = FALSE,
+            quote = FALSE
+            )
+
