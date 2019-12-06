@@ -1,0 +1,30 @@
+## 크롬을 활용한 웹크롤링
+
+## 1. "C:\"경로에 "C:\selenium" 만들기
+
+## 2. 해당 "selenium"폴더에
+##	1. 크롬웹드라이버
+##	2. geckodriver
+##	3. selenium server standalone
+## 설치하기
+
+## 3. 명령 프롬프트 열기 (cmd)
+##	1. 다음을 순서대로 입력
+##		cd C:\selenium
+##		java -Dwebdriver.gecko.driver="geckodriver.exe" -jar selenium-server-standalone-3.141.59.jar -port 4445
+	
+##		* 이때 Error가 출력된다면 selenium-server-standalone-3.141.59.jar 파일 이름을 일치 시켜준다.
+
+## [R studio 실행]
+## 4. 패키지 설 및 등록
+library(httr)
+library(rvest)
+library(RSelenium)
+
+remD = remoteDriver(port = 4445L, # 포트번호 입력
+                    browserName = "chrome" # 사용할 브라우저
+                    )
+
+remD$open()  # 서버에 연결
+
+remD$navigate(" ")  # 경로설정
